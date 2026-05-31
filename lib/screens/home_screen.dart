@@ -1,0 +1,170 @@
+import 'package:flutter/material.dart';
+import '../utils/constants.dart';
+import '../widgets/night_set_card.dart';
+import '../widgets/bottom_nav_bar.dart';
+import 'menu_screen.dart';
+import 'cart_screen.dart';
+import 'contacts_screen.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _currentIndex = 0;
+  late final PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        children: const [
+          HomeContent(),
+          MenuScreen(),
+          CartScreen(),
+          ContactsScreen(),
+        ],
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+            _pageController.jumpToPage(index);
+          });
+        },
+      ),
+    );
+  }
+}
+
+class HomeContent extends StatelessWidget {
+  const HomeContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Hero секция
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF0A0A1A), Color(0xFF1A1A3A)],
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: const Color(0x22FF6B00),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: const Text(
+                    '🌙 Работаем 24/7 | Ночная скидка 10% 🌙',
+                    style: TextStyle(color: Color(0xFFFF6B00), fontSize: 12),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Бургеры, \nдомашняя кухня\nи хрустящий картофель фри',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    height: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Круглосуточная доставка в Саратове. Минимальный заказ — 450 ₽. Бесплатная доставка.',
+                  style: TextStyle(color: Color(0xFFCCCCCC), fontSize: 14),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    _buildFeature(Icons.access_time, '24/7'),
+                    const SizedBox(width: 24),
+                    _buildFeature(Icons.delivery_dining, 'до 45 минут'),
+                    const SizedBox(width: 24),
+                    _buildFeature(Icons.currency_ruble, 'от 450 ₽'),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          // Ночные сеты
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '🌙 Ночные сеты',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Спецпредложения с 00:00 до 06:00. Скидка до 170 ₽',
+                  style: TextStyle(color: Color(0xFFAAAAAA)),
+                ),
+                const SizedBox(height: 20),
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    mainAxisExtent: 340,  // Увеличено с 320 до 340 для fitWidth
+                  ),
+                  itemCount: MenuData.nightSets.length,
+                  itemBuilder: (context, index) {
+                    return NightSetCard(set: MenuData.nightSets[index]);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeature(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: const Color(0xFFFF6B00)),
+        const SizedBox(width: 6),
+        Text(text, style: const TextStyle(color: Colors.white, fontSize: 13)),
+      ],
+    );
+  }
+}

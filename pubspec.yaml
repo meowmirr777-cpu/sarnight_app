@@ -1,0 +1,53 @@
+name: sarnight_app
+description: Приложение для доставки еды СарНайт
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  provider: ^6.1.1
+  shared_preferences: ^2.2.2
+  url_launcher: ^6.2.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/BBQ.jpg
+    - assets/images/budget.jpg
+    - assets/images/chicken_burger.jpg
+    - assets/images/chicken_tabaka.jpg
+    - assets/images/coffee.jpg
+    - assets/images/cola.jpg
+    - assets/images/cozy_evening.jpg
+    - assets/images/double_burger.jpg
+    - assets/images/free.jpg
+    - assets/images/free2.jpg
+    - assets/images/free3.jpg
+    - assets/images/fried_potato.jpg
+    - assets/images/how_mama.jpg
+    - assets/images/logo11.png
+    - assets/images/makaroni_kotleta.jpg
+    - assets/images/mors.jpg
+    - assets/images/nagets.jpg
+    - assets/images/night_hrust.jpg
+    - assets/images/orange.jpg
+    - assets/images/pure_podliva.jpg
+    - assets/images/pure_sosiski.jpg
+    - assets/images/set_driver.jpg
+    - assets/images/sous.jpg
+    - assets/images/spicy_burger.jpg
+    - assets/images/standart_burger.jpg
+    - assets/images/student.jpg
+    - assets/images/sup.jpg
+    - assets/images/tea.jpg
