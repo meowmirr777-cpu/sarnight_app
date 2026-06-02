@@ -118,9 +118,7 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeInOut,
+                    Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         color: const Color(0x22FF6B00),
@@ -149,11 +147,11 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                     const SizedBox(height: 24),
                     Row(
                       children: [
-                        _buildAnimatedFeature(Icons.access_time, '24/7', 0),
+                        _buildFeature(Icons.access_time, '24/7'),
                         const SizedBox(width: 24),
-                        _buildAnimatedFeature(Icons.delivery_dining, 'до 45 минут', 1),
+                        _buildFeature(Icons.delivery_dining, 'до 45 минут'),
                         const SizedBox(width: 24),
-                        _buildAnimatedFeature(Icons.currency_ruble, 'от 450 ₽', 2),
+                        _buildFeature(Icons.currency_ruble, 'от 450 ₽'),
                       ],
                     ),
                   ],
@@ -176,41 +174,19 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                   style: TextStyle(color: Color(0xFFAAAAAA)),
                 ),
                 const SizedBox(height: 20),
-                AnimatedBuilder(
-                  animation: _animationController,
-                  builder: (context, child) {
-                    return Opacity(
-                      opacity: _fadeAnimation.value,
-                      child: child,
-                    );
-                  },
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      mainAxisExtent: 340,
-                    ),
-                    itemCount: MenuData.nightSets.length,
-                    itemBuilder: (context, index) {
-                      return TweenAnimationBuilder(
-                        duration: Duration(milliseconds: 400 + index * 100),
-                        tween: Tween<double>(begin: 0.0, end: 1.0),
-                        builder: (context, value, child) {
-                          return Opacity(
-                            opacity: value,
-                            child: Transform.translate(
-                              offset: Offset(0, 20 * (1 - value)),
-                              child: child,
-                            ),
-                          );
-                        },
-                        child: NightSetCard(set: MenuData.nightSets[index]),
-                      );
-                    },
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    mainAxisExtent: 340,
                   ),
+                  itemCount: MenuData.nightSets.length,
+                  itemBuilder: (context, index) {
+                    return NightSetCard(set: MenuData.nightSets[index]);
+                  },
                 ),
               ],
             ),
@@ -220,26 +196,13 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildAnimatedFeature(IconData icon, String text, int delay) {
-    return TweenAnimationBuilder(
-      duration: Duration(milliseconds: 500 + delay * 100),
-      tween: Tween<double>(begin: 0.0, end: 1.0),
-      builder: (context, value, child) {
-        return Opacity(
-          opacity: value,
-          child: Transform.scale(
-            scale: value,
-            child: child,
-          ),
-        );
-      },
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: const Color(0xFFFF6B00)),
-          const SizedBox(width: 6),
-          Text(text, style: const TextStyle(color: Colors.white, fontSize: 13)),
-        ],
-      ),
+  Widget _buildFeature(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: const Color(0xFFFF6B00)),
+        const SizedBox(width: 6),
+        Text(text, style: const TextStyle(color: Colors.white, fontSize: 13)),
+      ],
     );
   }
 }

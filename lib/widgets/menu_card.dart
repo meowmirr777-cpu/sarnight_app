@@ -149,7 +149,8 @@ class MenuCard extends StatelessWidget {
               child: Image.asset(
                 item.imagePath,
                 width: double.infinity,
-                fit: BoxFit.fitWidth,
+                height: 120,
+                fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     height: 120,

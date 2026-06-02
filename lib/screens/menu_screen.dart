@@ -41,12 +41,12 @@ class MenuScreen extends StatelessWidget {
 
   Widget _buildMenuGrid(List<dynamic> items) {
     return GridView.builder(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(12),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        mainAxisExtent: 300,  // Увеличено для fitWidth
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        mainAxisExtent: 280,
       ),
       itemCount: items.length,
       itemBuilder: (context, index) {
