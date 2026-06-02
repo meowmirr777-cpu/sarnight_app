@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/cart_item.dart';
 
 class MenuCard extends StatelessWidget {
   final CartItem item;
 
   const MenuCard({super.key, required this.item});
+
+  void _orderViaVK(BuildContext context) {
+    final message = 'Здравствуйте! Хочу заказать: ${item.name} (${item.price}₽)';
+    final url = 'https://vk.com/im?sel=-239118072&text=${Uri.encodeComponent(message)}';
+    _launchUrl(url);
+  }
+
+  Future<void> _launchUrl(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
 
   void _showDescription(BuildContext context) {
     showModalBottomSheet(
@@ -103,6 +117,33 @@ class MenuCard extends StatelessWidget {
                   ),
                 ),
                 child: const Text('Добавить в корзину', style: TextStyle(fontSize: 16, color: Colors.white)),
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Кнопка "Заказать через ВКонтакте"
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () {
+                  _orderViaVK(context);
+                  Navigator.pop(context);
+                },
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color(0xFF2787F5), width: 1.5),
+                  backgroundColor: Colors.transparent,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.chat, color: Color(0xFF2787F5), size: 20),
+                    SizedBox(width: 8),
+                    Text('Заказать через ВКонтакте', style: TextStyle(fontSize: 16, color: Color(0xFF2787F5))),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 10),

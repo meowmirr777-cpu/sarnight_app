@@ -46,10 +46,20 @@ class ContactsScreen extends StatelessWidget {
               color: const Color(0xFFFF6B00),
             ),
             const Spacer(),
-            const Text(
-              '© 2026 СарНайт — твой ночной фастфуд в Саратове',
-              style: TextStyle(color: Colors.grey, fontSize: 12),
-              textAlign: TextAlign.center,
+            const Column(
+              children: [
+                Text(
+                  'ИП «СарНайт» | Саратов, ул. Вольская, 127/133 | 24/7',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '© 2026 СарНайт — твой ночной фастфуд в Саратове',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ],
         ),

@@ -96,6 +96,52 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
     super.dispose();
   }
 
+  void _showDiscountInfo(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1A3A),
+        title: const Text(
+          '🌙 Ночная скидка 10%',
+          style: TextStyle(color: Color(0xFFFF6B00)),
+        ),
+        content: const Text(
+          'Скидка действует на все заказы,\nоформленные с 00:00 до 06:00.\nАвтоматически применяется при оформлении заказа.\n\nМинимальная сумма заказа — 450 ₽.\nДоставка бесплатная!',
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Понятно', style: TextStyle(color: Color(0xFFFF6B00))),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showFeatureInfo(BuildContext context, String title, String description) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1A3A),
+        title: Text(
+          title,
+          style: const TextStyle(color: Color(0xFFFF6B00)),
+        ),
+        content: Text(
+          description,
+          style: const TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Понятно', style: TextStyle(color: Color(0xFFFF6B00))),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -118,15 +164,19 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: const Color(0x22FF6B00),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: const Text(
-                        '🌙 Работаем 24/7 | Ночная скидка 10% 🌙',
-                        style: TextStyle(color: Color(0xFFFF6B00), fontSize: 12),
+                    // Кликабельная надпись о скидке
+                    GestureDetector(
+                      onTap: () => _showDiscountInfo(context),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: const Color(0x22FF6B00),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: const Text(
+                          '🌙 Работаем 24/7 | Ночная скидка 10% 🌙',
+                          style: TextStyle(color: Color(0xFFFF6B00), fontSize: 12),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -147,11 +197,35 @@ class _HomeContentState extends State<HomeContent> with SingleTickerProviderStat
                     const SizedBox(height: 24),
                     Row(
                       children: [
-                        _buildFeature(Icons.access_time, '24/7'),
+                        // Кликабельная кнопка 24/7
+                        GestureDetector(
+                          onTap: () => _showFeatureInfo(
+                            context,
+                            '🕐 Круглосуточная работа',
+                            'Мы работаем без выходных 24 часа в сутки, 7 дней в неделю!\n\nЗаказывайте любимые блюда в любое время дня и ночи.',
+                          ),
+                          child: _buildFeature(Icons.access_time, '24/7'),
+                        ),
                         const SizedBox(width: 24),
-                        _buildFeature(Icons.delivery_dining, 'до 45 минут'),
+                        // Кликабельная кнопка доставка
+                        GestureDetector(
+                          onTap: () => _showFeatureInfo(
+                            context,
+                            '🚚 Быстрая доставка',
+                            'Среднее время доставки — до 45 минут.\n\nМы заботимся о том, чтобы ваша еда приезжала горячей и свежей!',
+                          ),
+                          child: _buildFeature(Icons.delivery_dining, 'до 45 минут'),
+                        ),
                         const SizedBox(width: 24),
-                        _buildFeature(Icons.currency_ruble, 'от 450 ₽'),
+                        // Кликабельная кнопка минимальный заказ
+                        GestureDetector(
+                          onTap: () => _showFeatureInfo(
+                            context,
+                            '💰 Минимальный заказ',
+                            'Минимальная сумма заказа — 450 ₽.\n\nДоставка по городу — БЕСПЛАТНО!\n\nНочная скидка 10% с 00:00 до 06:00.',
+                          ),
+                          child: _buildFeature(Icons.currency_ruble, 'от 450 ₽'),
+                        ),
                       ],
                     ),
                   ],
