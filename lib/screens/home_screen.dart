@@ -59,8 +59,42 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class HomeContent extends StatelessWidget {
+class HomeContent extends StatefulWidget {
   const HomeContent({super.key});
+
+  @override
+  State<HomeContent> createState() => _HomeContentState();
+}
+
+class _HomeContentState extends State<HomeContent> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+    
+    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+    
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,59 +102,65 @@ class HomeContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Hero секция
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF0A0A1A), Color(0xFF1A1A3A)],
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: const Color(0x22FF6B00),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: const Text(
-                    '🌙 Работаем 24/7 | Ночная скидка 10% 🌙',
-                    style: TextStyle(color: Color(0xFFFF6B00), fontSize: 12),
+          FadeTransition(
+            opacity: _fadeAnimation,
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF0A0A1A), Color(0xFF1A1A3A)],
                   ),
                 ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Бургеры, \nдомашняя кухня\nи хрустящий картофель фри',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    height: 1.2,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Круглосуточная доставка в Саратове. Минимальный заказ — 450 ₽. Бесплатная доставка.',
-                  style: TextStyle(color: Color(0xFFCCCCCC), fontSize: 14),
-                ),
-                const SizedBox(height: 24),
-                Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildFeature(Icons.access_time, '24/7'),
-                    const SizedBox(width: 24),
-                    _buildFeature(Icons.delivery_dining, 'до 45 минут'),
-                    const SizedBox(width: 24),
-                    _buildFeature(Icons.currency_ruble, 'от 450 ₽'),
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: const Color(0x22FF6B00),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: const Text(
+                        '🌙 Работаем 24/7 | Ночная скидка 10% 🌙',
+                        style: TextStyle(color: Color(0xFFFF6B00), fontSize: 12),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Бургеры, \nдомашняя кухня\nи хрустящий картофель фри',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Круглосуточная доставка в Саратове. Минимальный заказ — 450 ₽. Бесплатная доставка.',
+                      style: TextStyle(color: Color(0xFFCCCCCC), fontSize: 14),
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      children: [
+                        _buildAnimatedFeature(Icons.access_time, '24/7', 0),
+                        const SizedBox(width: 24),
+                        _buildAnimatedFeature(Icons.delivery_dining, 'до 45 минут', 1),
+                        const SizedBox(width: 24),
+                        _buildAnimatedFeature(Icons.currency_ruble, 'от 450 ₽', 2),
+                      ],
+                    ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
-          // Ночные сеты
           Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -136,19 +176,41 @@ class HomeContent extends StatelessWidget {
                   style: TextStyle(color: Color(0xFFAAAAAA)),
                 ),
                 const SizedBox(height: 20),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    mainAxisExtent: 340,  // Увеличено с 320 до 340 для fitWidth
-                  ),
-                  itemCount: MenuData.nightSets.length,
-                  itemBuilder: (context, index) {
-                    return NightSetCard(set: MenuData.nightSets[index]);
+                AnimatedBuilder(
+                  animation: _animationController,
+                  builder: (context, child) {
+                    return Opacity(
+                      opacity: _fadeAnimation.value,
+                      child: child,
+                    );
                   },
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      mainAxisExtent: 340,
+                    ),
+                    itemCount: MenuData.nightSets.length,
+                    itemBuilder: (context, index) {
+                      return TweenAnimationBuilder(
+                        duration: Duration(milliseconds: 400 + index * 100),
+                        tween: Tween<double>(begin: 0.0, end: 1.0),
+                        builder: (context, value, child) {
+                          return Opacity(
+                            opacity: value,
+                            child: Transform.translate(
+                              offset: Offset(0, 20 * (1 - value)),
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: NightSetCard(set: MenuData.nightSets[index]),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
@@ -158,13 +220,26 @@ class HomeContent extends StatelessWidget {
     );
   }
 
-  Widget _buildFeature(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: const Color(0xFFFF6B00)),
-        const SizedBox(width: 6),
-        Text(text, style: const TextStyle(color: Colors.white, fontSize: 13)),
-      ],
+  Widget _buildAnimatedFeature(IconData icon, String text, int delay) {
+    return TweenAnimationBuilder(
+      duration: Duration(milliseconds: 500 + delay * 100),
+      tween: Tween<double>(begin: 0.0, end: 1.0),
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.scale(
+            scale: value,
+            child: child,
+          ),
+        );
+      },
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: const Color(0xFFFF6B00)),
+          const SizedBox(width: 6),
+          Text(text, style: const TextStyle(color: Colors.white, fontSize: 13)),
+        ],
+      ),
     );
   }
 }

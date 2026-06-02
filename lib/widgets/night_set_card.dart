@@ -1,9 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../models/cart_item.dart';
 
 class NightSetCard extends StatelessWidget {
   final Map<String, dynamic> set;
 
   const NightSetCard({super.key, required this.set});
+
+  void _addToCart(BuildContext context) {
+    final cart = Provider.of<CartModel>(context, listen: false);
+    
+    cart.addItem(CartItem(
+      id: set['id'],
+      name: set['name'],
+      description: set['desc'],
+      price: set['newPrice'],
+      imagePath: set['image'],
+    ));
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${set['name']} добавлен в корзину'),
+        duration: const Duration(seconds: 1),
+        backgroundColor: const Color(0xFFFF6B00),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,17 +43,15 @@ class NightSetCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Картинка — теперь видна полностью!
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             child: Image.asset(
               set['image'],
               width: double.infinity,
-              height: 160,
-              fit: BoxFit.fitWidth,  // ← Изменено! Показывает всю ширину, высота подстраивается
+              fit: BoxFit.fitWidth,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  height: 160,
+                  height: 150,
                   width: double.infinity,
                   color: const Color(0x22FF6B00),
                   child: const Icon(
@@ -43,7 +63,6 @@ class NightSetCard extends StatelessWidget {
               },
             ),
           ),
-          // Информация
           Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
@@ -93,15 +112,7 @@ class NightSetCard extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Сет добавлен в корзину!'),
-                          duration: Duration(seconds: 1),
-                          backgroundColor: Color(0xFFFF6B00),
-                        ),
-                      );
-                    },
+                    onPressed: () => _addToCart(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFF6B00),
                       padding: const EdgeInsets.symmetric(vertical: 10),
